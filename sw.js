@@ -15,7 +15,7 @@ self.addEventListener('install', function(event) {
      ]).cache(function(error) {
        console.log('Cache fail: ' + error);
      });
-   })
+   });
  );
 });
 
@@ -26,10 +26,10 @@ self.addEventListener('fetch', function(event) {
       return response ||
       fetch(event.request).then(function(fetchResponse) {
         return caches.open('restaurant-reviews1').then(function(cache) {
-          cache.put(event.request. fetchResponse.clone());
+          cache.put(event.request, fetchResponse.clone());
           return fetchResponse;
         });
       });
-    })
+    });
   );
 });

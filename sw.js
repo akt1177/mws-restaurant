@@ -10,15 +10,13 @@ self.addEventListener('install', function(event) {
        '/js/main.js',
        '/js/restaurant_info.js',
        '/css/styles.css',
-       '/data/restaurants.json',
+       //'/data/restaurants.json',
        '/restaurant.html'
-     ]).cache(function(error) {
+     ]).catch(function(error) {
        console.log('Cache fail: ' + error);
      });
-   });
- );
+   }));
 });
-
 
 self.addEventListener('fetch', function(event) {
   event.respondWith(
@@ -30,6 +28,5 @@ self.addEventListener('fetch', function(event) {
           return fetchResponse;
         });
       });
-    });
-  );
+    }));
 });

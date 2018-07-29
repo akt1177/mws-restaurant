@@ -1,3 +1,4 @@
+
 /**
  * Common database helper functions.
  */
@@ -8,14 +9,57 @@ class DBHelper {
    * Change this to restaurants.json file location on your server.
    */
   static get DATABASE_URL() {
-    const port = 8000 // Change this to your server port
-    return `http://localhost:${port}/data/restaurants.json`;
+    const port = 1337 // Change this to your server port
+    return `http://localhost:${port}/restaurants`;
+
+    /* project 1 running on localhost:8000 and using local json*/
+    /*const port = 8000 // Change this to your server port
+    return `http://localhost:${port}/data/restaurants.json`;*/
   }
 
   /**
    * Fetch all restaurants.
    */
+
   static fetchRestaurants(callback) {
+    //if(navigator.onLine) {
+      //Get the JSON and store in IDB
+
+      let fetchURL = DBHelper.DATABASE_URL;
+      fetch(fetchURL).then(response => {
+        const restaurants = response.json()
+        .then(restaurants => {
+          var dbPromise = idb.open('restaurant-reviews',1,function(upgradeDb) {
+            var keyValStore = upgradeDb.createObjectStore('keyval', {keyPath: 'id'});
+            for (var i = 0; i < restaurants.length; i++) {
+              keyValStore.put(restaurants[i]);
+            } //end for
+          }); // end idb.open
+        callback(null,restaurants);
+      });// end .then
+      }); //end fetchURL
+
+
+    /*if (!navigator.onLine) {
+
+      console.log('offline');
+
+      dbPromise.then((db) => {
+        var tx = db.transaction('keyval');
+        var store = tx.objectStore('keyval');
+
+        var restaurants =  store.getAll();
+
+        console.log(restaurants);
+        callback(null, restaurants);
+        //return tx.complete;
+      });*/
+
+    }
+  //}
+
+
+  /*static fetchRestaurants(callback) {
     let xhr = new XMLHttpRequest();
     xhr.open('GET', DBHelper.DATABASE_URL);
     xhr.onload = () => {
@@ -29,7 +73,7 @@ class DBHelper {
       }
     };
     xhr.send();
-  }
+  }*/
 
   /**
    * Fetch a restaurant by its ID.
@@ -160,6 +204,20 @@ class DBHelper {
   /**
    * Map marker for a restaurant.
    */
+   static mapMarkerForRestaurant(restaurant, map) {
+       // https://leafletjs.com/reference-1.3.0.html#marker
+       const marker = new L.marker([restaurant.latlng.lat, restaurant.latlng.lng],
+         {title: restaurant.name,
+         alt: restaurant.name,
+         url: DBHelper.urlForRestaurant(restaurant)
+         })
+         marker.addTo(newMap);
+       return marker;
+     }
+
+
+
+     /*old google maps
   static mapMarkerForRestaurant(restaurant, map) {
     const marker = new google.maps.Marker({
       position: restaurant.latlng,
@@ -169,6 +227,30 @@ class DBHelper {
       animation: google.maps.Animation.DROP}
     );
     return marker;
-  }
+  }*/
 
 }
+
+
+
+/*var dbPromise = idb.open('restaurant-reviews',1,function(upgradeDb) {
+  var keyValStore = upgradeDb.createObjectStore('keyval');
+  keyValStore.put('world', 'hello');
+});
+
+dbPromise.then((db) => {
+    var tx = db.transaction('keyval');
+    var keyValStore = tx.objectStore('keyval');
+    return keyValStore.get('hello');
+}).then((val) => {
+  console.log('The value of "hello" is ', val);
+});
+*/
+
+
+
+/*dbPromise.then(function(db) {
+  var tx = db.transaction('keyval','readwrite');
+  var keyValStore = tx.objectStore('keyval');
+  keyValStore.put('two','one');
+}).then(() => console.log('Second done'));*/

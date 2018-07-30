@@ -11,7 +11,8 @@ self.addEventListener('install', function(event) {
        '/js/restaurant_info.js',
        '/css/styles.css',
        //'/data/restaurants.json',
-       '/restaurant.html'
+       '/restaurant.html',
+       '/manifest.json'
      ]).catch(function(error) {
        console.log('Cache fail: ' + error);
      });

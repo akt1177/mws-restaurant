@@ -79,6 +79,22 @@ fetchRestaurantFromURL = (callback) => {
   }
 }
 
+fetchReviews = () => {
+const id = getParameterByName('id');
+if (!id) {
+  console.log('There is no restaurant ID in the URL');
+  return;
+}
+DBHelper.fetchRestaurantReviewsById(id, (error, reviews) => {
+  self.reviews = reviews;
+  if (error || !reviews) {
+    console.log('Error retrieving reviews', error);
+    return;
+  }
+  fillReviewsHTML();
+});
+}
+
 /**
  * Create restaurant HTML and add it to the webpage
  */
@@ -104,8 +120,12 @@ fillRestaurantHTML = (restaurant = self.restaurant) => {
     fillRestaurantHoursHTML();
   }
   // fill reviews
-  fillReviewsHTML();
+  //fillReviewsHTML();
+  fetchReviews();
+
 }
+
+
 
 /**
  * Create restaurant operating hours HTML table and add it to the webpage.
@@ -130,7 +150,7 @@ fillRestaurantHoursHTML = (operatingHours = self.restaurant.operating_hours) => 
 /**
  * Create all reviews HTML and add them to the webpage.
  */
-fillReviewsHTML = (reviews = self.restaurant.reviews) => {
+fillReviewsHTML = (reviews = self.reviews) => {
   const container = document.getElementById('reviews-container');
   const title = document.createElement('h3');
   title.innerHTML = 'Reviews';
@@ -159,7 +179,7 @@ createReviewHTML = (review) => {
   li.appendChild(name);
 
   const date = document.createElement('p');
-  date.innerHTML = review.date;
+  date.innerHTML = readableDate(review.createdAt);
   li.appendChild(date);
 
   const rating = document.createElement('p');
@@ -197,4 +217,33 @@ getParameterByName = (name, url) => {
   if (!results[2])
     return '';
   return decodeURIComponent(results[2].replace(/\+/g, ' '));
+}
+
+readableDate = (unixdate) => {
+  let date = new Date(unixdate);
+  let year = date.getFullYear();
+  let month = date.getMonth();
+  let day = date.getDate();
+  return month + '/' + day + '/' + year;
+}
+
+
+submitReview = () => {
+  const review_body = {
+    restaurant_id: getParameterByName('id'),//where is the id?
+    name: document.getElementById('review-form-name'),
+    rating: document.getElementById('review-form-rating'),
+    comments: document.getElementById('review-form-text'),
+    createdAt: Date.now()
+  }
+
+  let fetch_vars = {
+    method: 'POST',
+    body: JSON.stringify(review_body),
+    headers: new Headers ({'Content-Type': 'application/jason'})
+  }
+  fetch('DBHelper.REVIEWS_URL',fetch_vars).then((response) => {
+    return response.json();
+  });
+
 }

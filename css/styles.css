@@ -249,7 +249,7 @@ nav h1 a {
 }
 #restaurant-img {
 	width: 90%;
-	margin: 0 0 1em 2em;
+	margin: 1em 0 1em 2em;
 }
 #restaurant-address {
   font-size: 12pt;
@@ -274,7 +274,7 @@ nav h1 a {
   /*padding: 140px 40px 30px;*/
 }
 
-#reviews-container {
+#reviews-container, #form-container {
   /*padding: 30px 40px 80px;*/
 	padding: 1em;
 }
@@ -313,6 +313,36 @@ nav h1 a {
 	margin: 0 0 1em 2em;
 }
 
+#favourite {
+	margin: 0 0 0 2em;
+}
+
+#review-add-button {
+	background-color: #000;
+	color: #fff;
+	padding: 1em;
+	margin: 1em;
+}
+
+#review-form-text {
+	display: block;
+	width: 40em;
+	height: 20em;
+	margin: 0 0 1em 0;
+}
+
+#review-form-name {
+	display: block;
+	width: 40em;
+	height: 1em;
+	margin: 0 0 1em 0;
+}
+
+#review-form-rating {
+	margin: 0 0 0 1em;
+}
+
+
 
 @media screen and (min-width: 800px) {
 
@@ -331,7 +361,9 @@ nav h1 a {
 		width: 50%;
 	}
 
-
+	/*.leaflet-container .leaflet-contr-attribution {
+		background: rgba(255,255,255,1);
+	}*/
 
 
 }

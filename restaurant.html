@@ -41,6 +41,8 @@
     <div id="sidecontent">
       <section id="restaurant-container">
       <h2 id="restaurant-name"></h2>
+      <input type="checkbox" id="favourite" name="favourite">
+        <label for="favourite">Save As Favourite</label>
       <img id="restaurant-img">
       <p id="restaurant-cuisine"></p>
       <p id="restaurant-address"></p>
@@ -50,6 +52,21 @@
     <!-- Beginning reviews -->
     <section id="reviews-container">
       <ul id="reviews-list"></ul>
+    </section>
+    <section id="form-container">
+      <h3>Add a Review</h3>
+      <form id="review-form" method="post">
+        <label for="review-form-name">Name</label><input type="text" id="review-form-name" name="review-form-name" form="review-form" required>
+        <label for="reivew-form-rating">Rating</label><select name="review-form-rating" id="review-form-rating" form="review-form" required>
+          <option value="1">1</option>
+          <option value="1">2</option>
+          <option value="1">3</option>
+          <option value="1">4</option>
+          <option value="1">5</option>
+        </select>
+        <label for="review-form-text" style="display:block;margin-top:1em;">Review</label><textarea name="review-form-text" id="review-form-text" form="review-form" required></textarea>
+        <button id="review-add-button" value="review-add-button" name="review-add-button" form="review-form" onclick="submitReview()">Submit your review</button>
+      </form>
     </section>
   </div>
     <!-- End reviews -->

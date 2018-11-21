@@ -17,6 +17,11 @@ class DBHelper {
     return `http://localhost:${port}/data/restaurants.json`;*/
   }
 
+  static get REVIEWS_URL() {
+    const port = 1337 // Change this to your server port
+    return `http://localhost:${port}/reviews`;
+  }
+
   /**
    * Fetch all restaurants.
    */
@@ -34,10 +39,11 @@ class DBHelper {
             for (var i = 0; i < restaurants.length; i++) {
               keyValStore.put(restaurants[i]);
             } //end for
-          }); // end idb.open
-        callback(null,restaurants);
+          });
+          callback(null,restaurants);
       });// end .then
       }); //end fetchURL
+
 
 
     /*if (!navigator.onLine) {
@@ -57,6 +63,25 @@ class DBHelper {
 
     }
   //}
+
+
+  static fetchRestaurantReviewsById(id, callback) {
+    let fetchURL = DBHelper.REVIEWS_URL + '/?restaurant_id=' + id;
+    fetch(fetchURL).then(response => {
+      const reviews = response.json()
+      .then(reviews => {
+        var dbPromise = idb.open('restaurant-reviews-list',1,function(upgradeDb) {
+          var keyValStore = upgradeDb.createObjectStore('keyval', {keyPath: 'id'});
+          for (var i = 0; i < reviews.length; i++) {
+            keyValStore.put(reviews[i]);
+          } //end for
+
+        });
+        callback(null,reviews);
+    });// end .then
+    }); //end fetchURL
+  }
+
 
 
   /*static fetchRestaurants(callback) {
@@ -80,12 +105,12 @@ class DBHelper {
    */
   static fetchRestaurantById(id, callback) {
     // fetch all restaurants with proper error handling.
-    DBHelper.fetchRestaurants((error, restaurants) => {
+    DBHelper.fetchRestaurants((error,restaurants) => {
       if (error) {
         callback(error, null);
       } else {
         const restaurant = restaurants.find(r => r.id == id);
-        if (restaurant) { // Got the restaurant
+        if (restaurant) { // Got the review
           callback(null, restaurant);
         } else { // Restaurant does not exist in the database
           callback('Restaurant does not exist', null);
@@ -93,6 +118,7 @@ class DBHelper {
       }
     });
   }
+
 
   /**
    * Fetch restaurants by a cuisine type with proper error handling.

@@ -20,14 +20,16 @@ self.addEventListener('install', function(event) {
 });
 
 self.addEventListener('fetch', function(event) {
-  event.respondWith(
-    caches.match(event.request).then(function(response) {
-      return response ||
-      fetch(event.request).then(function(fetchResponse) {
-        return caches.open('restaurant-reviews1').then(function(cache) {
-          cache.put(event.request, fetchResponse.clone());
-          return fetchResponse;
+  if (requestURL.origin !== location.origin) {
+    event.respondWith(
+      caches.match(event.request).then(function(response) {
+        return response ||
+        fetch(event.request).then(function(fetchResponse) {
+          return caches.open('restaurant-reviews1').then(function(cache) {
+            cache.put(event.request, fetchResponse.clone());
+            return fetchResponse;
+          });
         });
-      });
-    }));
-});
+      }));
+    };
+  });

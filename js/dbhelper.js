@@ -242,7 +242,6 @@ class DBHelper {
      }
 
 
-
      /*old google maps
   static mapMarkerForRestaurant(restaurant, map) {
     const marker = new google.maps.Marker({
@@ -254,6 +253,7 @@ class DBHelper {
     );
     return marker;
   }*/
+
 
 }
 

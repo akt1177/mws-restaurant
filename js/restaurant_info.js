@@ -115,6 +115,14 @@ fillRestaurantHTML = (restaurant = self.restaurant) => {
   const cuisine = document.getElementById('restaurant-cuisine');
   cuisine.innerHTML = restaurant.cuisine_type;
 
+  const fave = document.getElementById('favourite');
+  fave.checked = restaurant.is_favorite;
+  // if (restaurant.is_favorite == true) {
+  //   fave.checked = true;
+  // } else {
+  //   fave.checked = false;
+  // }
+
   // fill operating hours
   if (restaurant.operating_hours) {
     fillRestaurantHoursHTML();
@@ -228,22 +236,75 @@ readableDate = (unixdate) => {
 }
 
 
-submitReview = () => {
+
+submitReview = (event) => {
+  event.preventDefault();
   const review_body = {
-    restaurant_id: getParameterByName('id'),//where is the id?
-    name: document.getElementById('review-form-name'),
-    rating: document.getElementById('review-form-rating'),
-    comments: document.getElementById('review-form-text'),
-    createdAt: Date.now()
+    "restaurant_id": parseInt(getParameterByName('id'),10),
+    "name": document.getElementById('review-form-name').value,
+    "rating": document.getElementById('review-form-rating').value,
+    "comments": document.getElementById('review-form-text').value
   }
 
   let fetch_vars = {
     method: 'POST',
     body: JSON.stringify(review_body),
-    headers: new Headers ({'Content-Type': 'application/jason'})
+    headers: {'Content-Type': 'application/json'}
   }
-  fetch('DBHelper.REVIEWS_URL',fetch_vars).then((response) => {
+
+  fetch(DBHelper.REVIEWS_URL,fetch_vars).then((response) => {
     return response.json();
   });
 
+  return false;
 }
+
+submitReview = (event) => {
+  event.preventDefault();
+  const review_body = {
+    "restaurant_id": parseInt(getParameterByName('id'),10),
+    "name": document.getElementById('review-form-name').value,
+    "rating": document.getElementById('review-form-rating').value,
+    "comments": document.getElementById('review-form-text').value
+  }
+
+  let fetch_vars = {
+    method: 'POST',
+    body: JSON.stringify(review_body),
+    headers: {'Content-Type': 'application/json'}
+  }
+
+  fetch(DBHelper.REVIEWS_URL,fetch_vars).then((response) => {
+    return response.json();
+  });
+
+  window.location = 'http://localhost:8000/restaurant.html?id=' + getParameterByName('id');
+  return false;
+}
+
+document.getElementById('favourite').onclick = function() {
+  //console.log('click');
+    if ( this.checked ) {
+        let fetch_vars = {
+          method: 'POST',
+          body: JSON.stringify({"is_favorite": true})
+        }
+        let faveURL = DBHelper.DATABASE_URL + '/' + getParameterByName('id')
+
+        fetch(faveURL, fetch_vars).then((response) => {
+          console.log('is_favourite: ' + this.checked );
+          return response.json();
+        });
+    } else {
+        let fetch_vars = {
+          method: 'POST',
+          body: JSON.stringify({"is_favorite": false})
+        }
+        let faveURL = DBHelper.DATABASE_URL + '/' + getParameterByName('id')
+
+        fetch(faveURL, fetch_vars).then((response) => {
+          console.log('is_favourite: ' + this.checked );
+          return response.json();
+        });
+    }
+};

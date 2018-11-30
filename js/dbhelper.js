@@ -70,12 +70,21 @@ class DBHelper {
     fetch(fetchURL).then(response => {
       const reviews = response.json()
       .then(reviews => {
+        console.log('1');
         var dbPromise = idb.open('restaurant-reviews-list',1,function(upgradeDb) {
+          console.log('2');
           var keyValStore = upgradeDb.createObjectStore('keyval', {keyPath: 'id'});
+          // for (var i = 0; i < reviews.length; i++) {
+          //   keyValStore.put(reviews[i]);
+          // } //end for
+        })
+        dbPromise.then(function(db) {
+          console.log('here');
+          var tx = db.transaction('keyval','readwrite');
+          var keyValStore = tx.objectStore('keyval');
           for (var i = 0; i < reviews.length; i++) {
             keyValStore.put(reviews[i]);
           } //end for
-
         });
         callback(null,reviews);
     });// end .then
